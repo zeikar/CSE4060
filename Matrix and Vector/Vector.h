@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cassert>
 using namespace std;
 
 template<class T>
@@ -15,7 +16,7 @@ public:
 	void print();
 	const int size();
 
-private:	
+private:
 	int size_;
 };
 
@@ -65,4 +66,20 @@ template<class T>
 const int Vector<T>::size()
 {
 	return size_;
+}
+
+template<class T>
+T dotProduct(Vector<T>& v1, Vector<T>& v2)
+{
+	// v1 and v2's size must be same
+	assert(v1.size() == v2.size());
+
+	T result = 0;
+
+	for (int i = 0; i < v1.size(); ++i)
+	{
+		result += v1.values_[i] * v2.values_[i];
+	}
+
+	return result;
 }

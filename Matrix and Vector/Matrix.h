@@ -11,6 +11,7 @@ public:
 	T **values_;
 
 	Matrix(int _row = 3, int _column = 3);
+	Matrix(double theta, int _row = 4, int _column = 4);
 	Matrix(const Matrix& m);
 	~Matrix();
 
@@ -41,6 +42,36 @@ Matrix<T>::Matrix(int _row, int _column)
 			values_[i][j] = 0;
 		}
 	}
+}
+
+// constructor with theta
+template<class T>
+Matrix<T>::Matrix(double theta, int _row, int _column)
+	: row_(_row), column_(_column)
+{
+	const double PI = 3.14159265358979323846;
+	const double theta_rad = theta / 180.0 * PI;
+	const double cos_theta = cos(theta_rad);
+	const double sin_theta = sin(theta_rad);
+
+	values_ = new T*[row_];
+
+	for (int i = 0; i < row_; ++i)
+	{
+		values_[i] = new T[column_];
+
+		for (int j = 0; j < column_; ++j)
+		{
+			values_[i][j] = 0;
+		}
+	}
+
+	values_[0][0] = cos_theta;
+	values_[0][1] = -sin_theta;
+	values_[1][0] = sin_theta;
+	values_[1][1] = cos_theta;
+	values_[2][2] = 1;
+	values_[3][3] = 1;
 }
 
 template<class T>
@@ -100,9 +131,10 @@ inline const int Matrix<T>::column()
 template<class T>
 Vector<T> Matrix<T>::multiply(Vector<T>& _v)
 {
-	// cant operate 
+	// column of matrix and size of vector must be same
 	assert(column_ == _v.size());
 
+	// size of output vector should be row of matrix
 	Vector<T> output_v(row_);
 
 	for (int i = 0; i < row_; i++)
@@ -119,9 +151,9 @@ Vector<T> Matrix<T>::multiply(Vector<T>& _v)
 template<class T>
 Matrix<T> Matrix<T>::multiply(Matrix<T>& _m)
 {
-	// cant operate 
+	// column of matrix1 and row of matrix2 must be same
 	assert(column_ == _m.row_);
-	
+
 	Matrix<T> output_m(row_, _m.column_);
 
 	for (int i = 0; i < row_; i++)
